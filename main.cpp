@@ -11,6 +11,7 @@ bool NoCollision(int*, Pieza***);
 bool CanMove(Pieza*, int*);
 bool CanEat(Pieza*, int*, Pieza***);
 bool Crown(Pieza*, int*);
+void deleteGame(Pieza***)
 int main() {
 	int P1Alive;
 	int P2Alive;
@@ -38,6 +39,16 @@ int main() {
 	Tabla[7][2] = new Pieza(2, 7, 2);
 	Tabla[7][4] = new Pieza(2, 7, 4);
 	Tabla[7][6] = new Pieza(2, 7, 6);
+
+	Tabla[6][1] = new Pieza(2, 6, 1);
+	Tabla[6][3] = new Pieza(2, 6, 3);
+	Tabla[6][5] = new Pieza(2, 6, 5);
+	Tabla[6][7] = new Pieza(2, 6, 7);
+
+	Tabla[5][0] = new Pieza(2, 5, 0);
+	Tabla[5][2] = new Pieza(2, 5, 2);
+	Tabla[5][4] = new Pieza(2, 5, 4);
+	Tabla[5][6] = new Pieza(2, 5, 6);
 	Pieza* Selected;
 	int* Position;
 	bool EndGame = true;
@@ -49,9 +60,9 @@ int main() {
 		//getch();
 		switch (Turn) {
 			case 1: {
-				/*while (Selected->get) {
-
-				}*/
+				while (Selected->getPlayer()!=Turn) {
+					Selected = show(Tabla);
+				}
 				Position = Move(Tabla);
 				addstr(to_string(Position[0]).c_str());
 				getch();
@@ -62,7 +73,7 @@ int main() {
 					Selected->setXPos(Position[0]);
 					Selected->setYPos(Position[1]);
 					Crown(Selected, Position);
-					//Turn = 2;
+					Turn = 2;
 				}
 				if (CanEat(Selected, Position, Tabla)&&(NoCollision(Position, Tabla))) {
 					Tabla[Position[1]][Position[0]] = Selected;
@@ -71,6 +82,7 @@ int main() {
 					Selected->setXPos(Position[0]);
 					Selected->setYPos(Position[1]);
 					Crown(Selected, Position);
+					Turn = 2;
 				}
 				if (Selected->isGeneral()&&NoCollision(Position, Tabla)) {
 					Tabla[Position[1]][Position[0]] = Selected;
@@ -79,9 +91,43 @@ int main() {
 					Selected->setXPos(Position[0]);
 					Selected->setYPos(Position[1]);
 					//Crown(Selected, Position);
+					Turn = 2;
 				}
 			} break;
 			case 2: {
+				while (Selected->getPlayer()!=Turn) {
+					Selected = show(Tabla);
+				}
+				Position = Move(Tabla);
+				addstr(to_string(Position[0]).c_str());
+				getch();
+				if (CanMove(Selected, Position)&&(NoCollision(Position, Tabla))) {
+					Tabla[Position[1]][Position[0]] = Selected;
+					NullPiece = new Pieza(-1, Position[1], Position[0]);
+					Tabla[Selected->getYPos()][Selected->getXPos()] = NullPiece;
+					Selected->setXPos(Position[0]);
+					Selected->setYPos(Position[1]);
+					Crown(Selected, Position);
+					Turn = 1;
+				}
+				if (CanEat(Selected, Position, Tabla)&&(NoCollision(Position, Tabla))) {
+					Tabla[Position[1]][Position[0]] = Selected;
+					NullPiece = new Pieza(-1, Position[1], Position[0]);
+					Tabla[Selected->getYPos()][Selected->getXPos()] = NullPiece;
+					Selected->setXPos(Position[0]);
+					Selected->setYPos(Position[1]);
+					Crown(Selected, Position);
+					Turn = 1;
+				}
+				if (Selected->isGeneral()&&NoCollision(Position, Tabla)) {
+					Tabla[Position[1]][Position[0]] = Selected;
+					NullPiece = new Pieza(-1, Position[1], Position[0]);
+					Tabla[Selected->getYPos()][Selected->getXPos()] = NullPiece;
+					Selected->setXPos(Position[0]);
+					Selected->setYPos(Position[1]);
+					Turn = 1;
+					//Crown(Selected, Position);
+				}
 
 			} break;
 		}
@@ -111,7 +157,7 @@ int main() {
 	if (P2Alive==0) {
 		addstr("\n Gano el jugador 1!");
 	}
-
+	deleteGame(Tabla)
 	endwin();
 	return 0;
 }
@@ -126,6 +172,19 @@ Pieza*** setGame() {
 		}
 	}
 	return Matriz;
+}
+void deleteGame(Pieza*** Matriz) {
+	Pieza*** Matriz = new Pieza**[8];
+	for (int i = 0;i<8;i++) {
+		Matriz[i] = new Pieza*[8];
+	}
+	for (int i = 0;i<8;i++) {
+		for (int j = 0;j<8;j++) {
+			delete[] Matriz[i][j];
+		}
+		delete[] Matriz[i];
+	}
+	delete[] Matriz;
 }
 Pieza* show(Pieza*** Tabla) {
 	//Se le ingresa la matriz, y las longitudes de la tabla

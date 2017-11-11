@@ -11,7 +11,7 @@ bool NoCollision(int*, Pieza***);
 bool CanMove(Pieza*, int*);
 bool CanEat(Pieza*, int*, Pieza***);
 bool Crown(Pieza*, int*);
-void deleteGame(Pieza***)
+void deleteGame(Pieza***);
 int main() {
 	int P1Alive;
 	int P2Alive;
@@ -157,7 +157,7 @@ int main() {
 	if (P2Alive==0) {
 		addstr("\n Gano el jugador 1!");
 	}
-	deleteGame(Tabla)
+	deleteGame(Tabla);
 	endwin();
 	return 0;
 }
@@ -174,10 +174,6 @@ Pieza*** setGame() {
 	return Matriz;
 }
 void deleteGame(Pieza*** Matriz) {
-	Pieza*** Matriz = new Pieza**[8];
-	for (int i = 0;i<8;i++) {
-		Matriz[i] = new Pieza*[8];
-	}
 	for (int i = 0;i<8;i++) {
 		for (int j = 0;j<8;j++) {
 			delete[] Matriz[i][j];
